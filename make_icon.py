@@ -2,7 +2,7 @@
 根据 icon.svg 的设计，用 Pillow 直接绘制图标并生成 icon.ico
 包含 16, 32, 48, 64, 128, 256 多尺寸
 """
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import os
 
 def draw_icon(size):
@@ -56,19 +56,15 @@ def make_ico(output_path):
     sizes = [16, 32, 48, 64, 128, 256]
     images = [draw_icon(s) for s in sizes]
     # Pillow ICO 保存：用最大图像 save，append_images 传其余尺寸
-    # sizes 参数必须是每个图的 (w, h) 元组列表
     images[-1].save(
         output_path,
         format="ICO",
         sizes=[(s, s) for s in sizes],
         append_images=images[:-1]
     )
-    # 验证
-    check = Image.open(output_path)
-    n = check.n_frames
+    fsize = os.path.getsize(output_path)
     print(f"已生成 {output_path}")
-    print(f"包含帧数: {n}")
-    print(f"文件大小: {os.path.getsize(output_path):,} 字节")
+    print(f"文件大小: {fsize:,} 字节 ({len(sizes)} 尺寸: {sizes})")
 
 
 if __name__ == "__main__":
