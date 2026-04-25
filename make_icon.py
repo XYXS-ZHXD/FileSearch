@@ -1,6 +1,6 @@
 """
-根据 icon.svg 的设计，用 Pillow 直接绘制图标并生成 icon.ico
-包含 16, 32, 48, 64, 128, 256 多尺寸
+Generate icon.ico from SVG design using Pillow.
+Includes 16, 32, 48, 64, 128, 256 sizes.
 """
 from PIL import Image, ImageDraw
 import os
@@ -63,8 +63,8 @@ def make_ico(output_path):
         append_images=images[:-1]
     )
     fsize = os.path.getsize(output_path)
-    print(f"已生成 {output_path}")
-    print(f"文件大小: {fsize:,} 字节 ({len(sizes)} 尺寸: {sizes})")
+    print(f"icon.ico generated: {output_path}")
+    print(f"File size: {fsize:,} bytes ({len(sizes)} sizes: {sizes})")
 
 
 if __name__ == "__main__":
