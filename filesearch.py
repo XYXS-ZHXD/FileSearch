@@ -109,26 +109,26 @@ class FileSearchApp(tk.Tk):
 
     # ── 图标设置 ──────────────────────────────────────────────
     def _set_icon(self):
-        """设置窗口图标"""
-        # 优先尝试ICO文件，如果不存在则尝试SVG文件
-        icon_ico_path = os.path.join(BASE_DIR, "icon.ico")
-        icon_svg_path = os.path.join(BASE_DIR, "icon.svg")
+        """设置窗口图标
         
-        if os.path.exists(icon_ico_path):
-            try:
-                self.iconbitmap(icon_ico_path)
-                print("已设置窗口图标为 icon.ico")
-                return
-            except Exception as e:
-                print(f"设置ICO图标失败: {e}")
-        
-        if os.path.exists(icon_svg_path):
-            try:
-                # Tkinter不支持SVG，这里可以尝试转换为PNG或直接忽略
-                print(f"SVG图标文件存在: {icon_svg_path}")
-                print("提示：Tkinter不支持SVG格式，请将SVG转换为ICO后再使用")
-            except Exception as e:
-                print(f"处理SVG图标时出错: {e}")
+        查找顺序：
+        1. PyInstaller 打包后的临时解压目录（_MEIPASS）
+        2. 程序所在目录（BASE_DIR，便携版放置 icon.ico 的位置）
+        """
+        # PyInstaller 单文件模式：资源解压到 sys._MEIPASS
+        candidate_dirs = []
+        if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+            candidate_dirs.append(sys._MEIPASS)
+        candidate_dirs.append(BASE_DIR)
+
+        for d in candidate_dirs:
+            ico_path = os.path.join(d, "icon.ico")
+            if os.path.exists(ico_path):
+                try:
+                    self.iconbitmap(ico_path)
+                    return
+                except Exception:
+                    pass  # 继续尝试下一个
 
     # ── 主题 ──────────────────────────────────────────────────
     def _apply_theme(self):
